@@ -3,6 +3,12 @@
     <div class="d-flex flex-row mt-4">
       <div class="col-7 ms-2 col-lg-6">
         <h4 class="mt-1 mb-4"> Lista de Atenciones </h4>
+        <div class="d-flex justify-content-start">
+          <div class="me-2">
+            <button class="btn btn-primary" (click)="openCreateAtencionDialog()"> <i class="fa-solid fa-plus"> </i>
+              <span *ngIf="isDesktop"> Nuevo</span></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -12,69 +18,70 @@
         <table mat-table [dataSource]="dataAtencion" class="mat-elevation-z8" *ngIf="!noResults">
           <ng-container matColumnDef="numeroCita">
             <th mat-header-cell *matHeaderCellDef> Numero de Cita </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.cita_id}} </td>
           </ng-container>
 
           <ng-container matColumnDef="fecha">
             <th mat-header-cell *matHeaderCellDef> Fecha </th>
-            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.fecha}} </td>
           </ng-container>
 
           <ng-container matColumnDef="total">
             <th mat-header-cell *matHeaderCellDef> Total </th>
-            <td mat-cell *matCellDef="let element"> {{element.phone_number}} </td>
+            <td mat-cell *matCellDef="let element"> $ {{element.total}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        
+
         <mat-paginator *ngIf="!noResults" [pageSizeOptions]="[7]" showFirstLastButtons
-        [ngStyle]="{ display: listUser.length > 0 ? 'block' : 'none' }" class="custom-paginator"></mat-paginator>
+          [ngStyle]="{ display: listAtencion.length > 0 ? 'block' : 'none' }" class="custom-paginator"></mat-paginator>
       </div>
     </div>
   </div>
 </div>
 
 <ng-template #dialogCreateAtencion let-data>
-<div class="container-fluid" [ngClass]="{'scrollable-content': !isDesktop}">
-  <div class="row mt-4">
-    <div class="d-flex flex-row mt-4">
-      <div class="col-lg-12 mb-4">
-        <form >
-          <div class="container">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="name" class="form-label">Nombre </label>
-                <input oninput="this.value = this.value.replace(/[^A-Za-zñÑáéíóúÁÉÍÓÚ\s ]/g, '').replace(/(\..*)\./g, '$1');"
-                  type="text" class="form-control" formControlName="name" id="name" placeholder="Nombre" autocomplete="new_name">
+  <div class="container-fluid" [ngClass]="{'scrollable-content': !isDesktop}">
+    <h3 class="mt-4 text-center">Crear nueva atencion </h3>
+    <div class="row mt-4">
+      <div class="d-flex flex-row mt-4">
+        <div class="col-lg-12 mb-4">
+          <form [formGroup]="atencionForm">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="numCita" class="form-label">Cita</label>
+                  <select class="form-select" aria-label="Default select example" formControlName="citaId">
+                    <option [value]="null" selected>Cita</option>
+                    <option *ngFor="let cita of listCita" [value]="cita.id">
+                      {{ cita.id }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="fecha" class="form-label">Fecha </label>
+                  <input type="date" class="form-control" id="fecha" formControlName="fecha" placeholder="Fecha Cita">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="total" class="form-label">Total</label>
+                  <input type="text"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                    placeholder="10" aria-label="Cantidad" formControlName="total" class="form-control">
+                </div>
+
+                <div class="col-6 col-md-6 mb-3 text-center mt-3">
+                  <button class="btn btn-primary w-60" (click)="saveAtencion()"> Guardar Atención </button>
+                </div>
+
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="phone_number" class="form-label">Tel&eacute;fono</label>
-                <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
-                  maxlength="10" type="text" class="form-control" formControlName="phone_number" id="phone_number"
-                  placeholder="Telefono" autocomplete="new-phone_number">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email" autocomplete="new_email">
-              </div>
-<!-- 
-              <div class="col-6 col-md-6 mb-3 text-center mt-3" *ngIf="btn !== 'Actualizar'">
-                <button class="btn btn-primary w-60" (click)="saveUser()"> {{btn}} </button>
-              </div>
-              <div class="col-6 col-md-6 mb-3 text-center mt-3" *ngIf="btn === 'Actualizar'">
-                <button class="btn btn-primary w-60" (click)="updateUser()"> {{btn}} </button>
-              </div>
-              <div class="col-6 col-md-6 mb-3 text-center mt-3">
-                <button class="btn btn-danger w-60" (click)="cancelar()"> Cancelar </button>
-              </div> -->
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </ng-template>

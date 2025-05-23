@@ -69,48 +69,33 @@ export class LoginComponent implements OnDestroy {
     // Validamos el formulario
     if (this.loginForm.valid) {
       const email = this.loginForm.get('email')?.value;
-      console.log("🚀 ~ LoginComponent ~ login ~ email:", email)
-      
       const password = this.loginForm.get('password')?.value;
-      
-      console.log("🚀 ~ LoginComponent ~ login ~ password:", password)
 
-      
-
-      if(email === "admin@outlook.com" && password === "admin12345") {
-        this._router.navigate(['/admin']);
-      }
-
-/*       // Mostramos un mensaje de carga
+      // Mostramos un mensaje de carga
       setTimeout(() => {
         // Llamamos al servicio de login para loguear al usuario
         this.subscriptionLogin = this._loginService
           .login(email, password)
           .subscribe(
             async (data) => {
+
+              await this.sendUserDataLocalStorage(data);
+
+              console.log('🚀 ~ LoginComponent ~ data:', data);
+
               this._toastr.success('Bienvenido, Ingreso exitoso', 'Sistema', {
                 progressBar: true,
                 timeOut: 2000,
                 progressAnimation: 'decreasing',
               });
 
-              // Llamamos al servicio para buscar al usuario por email y obtener sus datos
-              await this._userService.findUserByEmail(email).subscribe(
-                async (data) => {
-                  // Si el usuario es admin lo redirigimos a la pagina de usuarios
-                  if (data.role === 'ADMIN') {
-                    this._router.navigate(['/admin']);
-                  }
-                  // Si el usuario es user lo redirigimos a la pagina de productos
-                  else {
-                    this._router.navigate(['/client']);
-                  }
-                },
-                // Si hay un error mostramos un mensaje
-                (error) => {
-                  console.error('Error:', error);
-                }
-              );
+              if (data.rol === 'ADMIN') {
+                this._router.navigate(['/admin']);
+              }
+              // Si el usuario es user lo redirigimos a la pagina de productos
+              else {
+                this._router.navigate(['/client']);
+              }
             },
             // Si el usuario no esta autorizado mostramos un mensaje de error
             (error) => {
@@ -135,11 +120,25 @@ export class LoginComponent implements OnDestroy {
               }
             }
           );
-      }, 2000); */
+      }, 2000);
     }
     // Si el formulario es invalido mostramos un mensaje de error
     else {
       this.loading = false;
+    }
+  }
+
+   // Metodo para procesar los datos del usuario
+  async sendUserDataLocalStorage(data: any): Promise<void> {
+    try {
+        const userRole = data.rol;
+        const user = {
+          ...data,
+          role: userRole
+        };
+        this._loginService.saveUser(JSON.stringify(user));
+    } catch (error) {
+      console.error('Error processing user data:', error);
     }
   }
 }

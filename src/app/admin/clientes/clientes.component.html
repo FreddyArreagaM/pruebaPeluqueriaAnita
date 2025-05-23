@@ -5,7 +5,7 @@
         <h4 class="mt-1 mb-4"> Lista de Clientes </h4>
         <div class="d-flex justify-content-start">
           <div class="me-2">
-            <button class="btn btn-primary" (click)="openCreateUserDialog()"> <i class="fa-solid fa-plus"> </i> <span
+            <button class="btn btn-primary" (click)="openCreateClienteDialog()"> <i class="fa-solid fa-plus"> </i> <span
                 *ngIf="isDesktop"> Nuevo</span></button>
           </div>
         </div>
@@ -15,77 +15,72 @@
     <div class="mt-5">
       <h6 *ngIf="noResults"> No hay datos de Clientes </h6>
       <div class="table-responsive">
-        <table mat-table [dataSource]="dataUser" class="mat-elevation-z8" *ngIf="!noResults">
+        <table mat-table [dataSource]="dataCliente" class="mat-elevation-z8" *ngIf="!noResults">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Nombre </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
           </ng-container>
 
           <ng-container matColumnDef="telefono">
-            <th mat-header-cell *matHeaderCellDef> telefono </th>
-            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+            <th mat-header-cell *matHeaderCellDef> Telefono </th>
+            <td mat-cell *matCellDef="let element"> {{element.telefono}} </td>
           </ng-container>
 
           <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef> email </th>
-            <td mat-cell *matCellDef="let element"> {{element.phone_number}} </td>
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
           </ng-container>
 
           <ng-container matColumnDef="createdDate">
             <th mat-header-cell *matHeaderCellDef> Fecha Registro </th>
-            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.fecha_registro}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-
-        
         <mat-paginator *ngIf="!noResults" [pageSizeOptions]="[7]" showFirstLastButtons
-        [ngStyle]="{ display: listUser.length > 0 ? 'block' : 'none' }" class="custom-paginator"></mat-paginator>
+          [ngStyle]="{ display: listCliente.length > 0 ? 'block' : 'none' }" class="custom-paginator"></mat-paginator>
       </div>
     </div>
   </div>
 </div>
 
 <ng-template #dialogCreateCustomer let-data>
-<div class="container-fluid" [ngClass]="{'scrollable-content': !isDesktop}">
-  <div class="row mt-4">
-    <div class="d-flex flex-row mt-4">
-      <div class="col-lg-12 mb-4">
-        <form >
-          <div class="container">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="name" class="form-label">Nombre </label>
-                <input oninput="this.value = this.value.replace(/[^A-Za-zñÑáéíóúÁÉÍÓÚ\s ]/g, '').replace(/(\..*)\./g, '$1');"
-                  type="text" class="form-control" formControlName="name" id="name" placeholder="Nombre" autocomplete="new_name">
+  <div class="container-fluid" [ngClass]="{'scrollable-content': !isDesktop}">
+        <h3 class="mt-4 text-center">Crear nuevo Cliente  </h3>
+    <div class="row mt-4">
+      <div class="d-flex flex-row mt-4">
+        <div class="col-lg-12 mb-4">
+          <form [formGroup]="customerForm">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nombre" class="form-label">Nombre </label>
+                  <input
+                    oninput="this.value = this.value.replace(/[^A-Za-zñÑáéíóúÁÉÍÓÚ\s ]/g, '').replace(/(\..*)\./g, '$1');"
+                    type="text" class="form-control" formControlName="nombre" id="nombre" placeholder="Nombre"
+                    autocomplete="new_nombre">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="telefono" class="form-label">Tel&eacute;fono</label>
+                  <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                    maxlength="10" type="text" class="form-control" formControlName="telefono" id="telefono"
+                    placeholder="Telefono" autocomplete="new-telefono">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email"
+                    autocomplete="new_email">
+                </div>
+                <div class="col-12 col-md-12 mb-3 text-center mt-3">
+                  <button class="btn btn-primary w-60" (click)="saveCustomer()"> Guardar</button>
+                </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="phone_number" class="form-label">Tel&eacute;fono</label>
-                <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
-                  maxlength="10" type="text" class="form-control" formControlName="phone_number" id="phone_number"
-                  placeholder="Telefono" autocomplete="new-phone_number">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" formControlName="email" id="email" placeholder="Email" autocomplete="new_email">
-              </div>
-<!-- 
-              <div class="col-6 col-md-6 mb-3 text-center mt-3" *ngIf="btn !== 'Actualizar'">
-                <button class="btn btn-primary w-60" (click)="saveUser()"> {{btn}} </button>
-              </div>
-              <div class="col-6 col-md-6 mb-3 text-center mt-3" *ngIf="btn === 'Actualizar'">
-                <button class="btn btn-primary w-60" (click)="updateUser()"> {{btn}} </button>
-              </div>
-              <div class="col-6 col-md-6 mb-3 text-center mt-3">
-                <button class="btn btn-danger w-60" (click)="cancelar()"> Cancelar </button>
-              </div> -->
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </ng-template>

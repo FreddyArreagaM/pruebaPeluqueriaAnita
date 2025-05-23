@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { ClienteService } from 'src/app/services/cliente/cliente.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 export interface Usuario {
@@ -46,6 +47,7 @@ export class UsuariosComponent {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private _userService: UserService,
+    private _customerService: ClienteService,
     private _toastService: ToastrService
   ) {
     this.userForm = this.fb.group({
@@ -97,34 +99,11 @@ export class UsuariosComponent {
 
   // Método para abrir el diálogo de creación de usuario
   openCreateUserDialog() {
-    this.dialog
-      .open(this.dialogTemplate, {
-        width: '600px',
-        height: 'auto',
-        data: '',
-      })
-      .afterClosed()
-      .subscribe(async (result) => {
-        if (result === 'created') {
-          await this.loadData();
-        }
-      });
-  }
-
-  // Método para abrir el diálogo de edición de usuario
-  openEditUserDialog(element: any, element_id: any) {
-    this.dialog
-      .open(this.dialogTemplate, {
-        width: '600px',
-        height: 'auto',
-        data: [element_id, element],
-      })
-      .afterClosed()
-      .subscribe(async (result) => {
-        if (result === 'updated') {
-          await this.loadData();
-        }
-      });
+    this.dialog.open(this.dialogTemplate, {
+      width: '600px',
+      height: 'auto',
+      data: '',
+    });
   }
 
   saveUser() {
@@ -137,11 +116,34 @@ export class UsuariosComponent {
         password: this.userForm.get('password')?.value,
       };
 
-      // Llamado al servicio de user para agregar un nuevo usuario
-      this._userService.addUser(user).subscribe(
-        () => {},
-        (error) => {
-          if (error.status === 200 || error.status === 201) {
+      if (user.rol === 'CLIENTE') {
+        const customer = {
+          nombre: user.nombre,
+          email: user.email,
+          telefono: '0000000000',
+        };
+        this._customerService.addCustomer(customer).subscribe(
+          () => {},
+          (error) => {
+            if (error.status === 200 || error.status === 201) {
+            } else {
+              this._toastService.error(
+                error.error.substring(error.error.indexOf(':') + 2),
+                ' Notificación ',
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                  progressAnimation: 'decreasing',
+                }
+              );
+            }
+          }
+        );
+
+        // Llamado al servicio de user para agregar un nuevo usuario
+        this._userService.addUser(user).subscribe(
+          (data) => {
+            console.log('🚀 ~ UsuariosComponent ~ saveUser ~ data:', data);
             this._toastService.success(
               'Usuario creado correctamente',
               'Correcto',
@@ -152,27 +154,37 @@ export class UsuariosComponent {
               }
             );
             this.dialog.closeAll();
-          } else {
-            this._toastService.error(
-              error.error.substring(error.error.indexOf(':') + 2),
-              ' Notificación ',
-              {
-                progressBar: true,
-                timeOut: 2000,
-                progressAnimation: 'decreasing',
-              }
-            );
+            this.loadData();
+            this.userForm.reset();
+          },
+          (error) => {
+            if (error.status === 200 || error.status === 201) {
+            } else {
+              this._toastService.error(
+                error.error.substring(error.error.indexOf(':') + 2),
+                ' Notificación ',
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                  progressAnimation: 'decreasing',
+                }
+              );
+            }
           }
-        }
-      );
-    }
-    // Validación de campos del formulario de user
-    else {
-      this._toastService.error('Por favor, ingrese todos los campos', 'Error', {
-        progressBar: true,
-        timeOut: 2000,
-        progressAnimation: 'decreasing',
-      });
+        );
+      }
+      // Validación de campos del formulario de user
+      else {
+        this._toastService.error(
+          'Por favor, ingrese todos los campos',
+          'Error',
+          {
+            progressBar: true,
+            timeOut: 2000,
+            progressAnimation: 'decreasing',
+          }
+        );
+      }
     }
   }
 }
