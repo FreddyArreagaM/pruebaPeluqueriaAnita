@@ -77,7 +77,7 @@ router.get('/:id', controller.obtenerUsuarioPorId);
 
 /**
  * @swagger
- * /usuarios/:
+ * /usuarios:
  *   post:
  *     summary: Crear un nuevo usuario
  *     tags: [Usuarios]
@@ -138,7 +138,7 @@ router.delete('/:id', controller.eliminarUsuario);
 
 /**
  * @swagger
- * /usuarios/buscar/email/{email}:
+ * /usuarios/buscarByemail/{email}:
  *   get:
  *     summary: Buscar un usuario por email
  *     tags: [Usuarios]
@@ -159,6 +159,6 @@ router.delete('/:id', controller.eliminarUsuario);
  *       404:
  *         description: Usuario no encontrado
  */
-router.get('/buscar/email/:email', controller.buscarPorEmail);
+router.get('/buscarByemail/:email', controller.buscarPorEmail);
 
 module.exports = router;
