@@ -1,0 +1,51 @@
+<div class="container">
+    <!-- Spinner -->
+    <div class="spinner" *ngIf="loading" ></div>
+
+    <!-- Front de Login -->
+    <div class="row justify-content-center" *ngIf="!loading">
+        <div class="col-lg-10">
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="col-lg-12">
+                        <!-- Descipción de la Peluqueria -->
+                        <div class="loginForm">
+                            <div class="mb-4 text-center mt-2">
+                                <h2 class="text-theme">Inicio de Sesi&oacute;n</h2>
+                            </div>
+                            <div class="text-center">
+                                <h1 class="h5 mb-0">Peluquería Anita</h1>
+                                <p class="text-muted mt-2 mb-3">Somos tu mejor elecci&oacute; en el cuidado de tu cabello.</p>
+                            </div>
+                            <!-- Formulario Login-->
+                            <form [formGroup]="loginForm">
+                                <!-- Email -->
+                                <div class="form-group mb-3">
+                                    <label for="exampleInputEmail1"> <b> Email &nbsp; <i class="fa-regular fa-circle-question" matTooltip="Correos válidos: gmail, outlook o hotmail."> </i> </b> </label>
+                                    <input [ngClass]="{ 'is-invalid': loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty) }" type="email" class="form-control mt-2" id="exampleInputEmail1" formControlName="email" autocomplete="new-email" required>
+                                    <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)" class="invalid-feedback">
+                                        <span *ngIf="loginForm.get('email')?.errors?.['required']">El correo electr&oacute;nico es obligatorio.</span>
+                                        <span *ngIf="loginForm.get('email')?.errors?.['invalidDomain']">El correo electr&oacute; nico debe ser de Gmail, Outlook o Hotmail .</span>
+                                    </div>
+                                </div>
+                                <!-- Password -->
+                                <div class="form-group mb-4">
+                                    <label for="exampleInputPassword1" ><b> Password &nbsp; <i class="fa-regular fa-circle-question" matTooltip="La contraseña debe tener al menos 8 caracteres."> </i> </b> </label>
+                                    <input [ngClass]="{ 'is-invalid': loginForm.get('password')?.invalid && (loginForm.get('password')?.touched || loginForm.get('password')?.dirty) }" type="password" class="form-control mt-2" id="exampleInputPassword1" formControlName="password" autocomplete="new-password" required>
+                                    <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.touched || loginForm.get('password')?.dirty)" class="invalid-feedback">
+                                        <span *ngIf="loginForm.get('password')?.errors?.['required']">La contrase&ntilde;a es obligatoria.</span>
+                                    </div>
+                                </div>
+                                <!-- Boton Login -->
+                                <div class="text-center mt-5 mb-3">
+                                    <button type="button" (click)="login()" class="btn btn-theme">Login</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
