@@ -7,6 +7,7 @@ CREATE TABLE clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     telefono VARCHAR(20),
+    cedula VARCHAR(10),
     email VARCHAR(100),
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );

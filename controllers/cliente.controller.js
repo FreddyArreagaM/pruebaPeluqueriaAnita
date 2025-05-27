@@ -8,8 +8,8 @@ exports.listar = (req, res) => {
 };
 
 exports.crear = (req, res) => {
-  const { nombre, telefono, email } = req.body;
-  db.query('INSERT INTO clientes (nombre, telefono, email) VALUES (?, ?, ?)', 
+  const { nombre, cedula, telefono, email } = req.body;
+  db.query('INSERT INTO clientes (nombre, cedula, telefono, email) VALUES (?, ?, ?, ?)', 
     [nombre, telefono, email], 
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });

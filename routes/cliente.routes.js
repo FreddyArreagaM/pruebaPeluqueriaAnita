@@ -25,6 +25,9 @@ const controller = require('../controllers/cliente.controller');
  *         telefono:
  *           type: string
  *           example: "0999999999"
+ *         cedula:
+ *           type: string
+ *           example: "0999999999"
  *         email:
  *           type: string
  *           example: "juan@example.com"
@@ -70,6 +73,8 @@ router.get('/', controller.listar);
  *               telefono:
  *                 type: string
  *               email:
+ *                 type: string
+ *               cedula:
  *                 type: string
  *     responses:
  *       201:

@@ -83,4 +83,96 @@ router.get('/', controller.listar);
 
 router.post('/', controller.crear);
 
+/**
+ * @swagger
+ * /citas/{id}/estado:
+ *   patch:
+ *     summary: Actualizar el estado de una cita por ID
+ *     tags: [Citas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la cita a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               estado:
+ *                 type: string
+ *                 enum: [PENDIENTE, REALIZADA, CANCELADA]
+ *                 example: REALIZADA
+ *     responses:
+ *       200:
+ *         description: Estado actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Estado actualizado correctamente
+ *       400:
+ *         description: Estado inválido
+ *       404:
+ *         description: Cita no encontrada
+ *       500:
+ *         description: Error del servidor
+ */
+router.patch('/:id/estado', controller.actualizarEstado);
+
+/**
+ * @swagger
+ * /citas/cedula/{cedula}:
+ *   get:
+ *     summary: Obtener citas por cédula de cliente
+ *     tags: [Citas]
+ *     parameters:
+ *       - in: path
+ *         name: cedula
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Cédula del cliente
+ *     responses:
+ *       200:
+ *         description: Lista de citas encontradas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   clienteId:
+ *                     type: integer
+ *                     example: 3
+ *                   fecha:
+ *                     type: string
+ *                     format: date-time
+ *                     example: 2025-05-30T10:00:00Z
+ *                   estado:
+ *                     type: string
+ *                     enum: [PENDIENTE, REALIZADA, CANCELADA]
+ *                     example: PENDIENTE
+ *                   observaciones:
+ *                     type: string
+ *                     example: Cliente pidió corte sencillo
+ *       404:
+ *         description: No se encontraron citas para la cédula especificada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/cedula/:cedula', controller.obtenerCitasPorCedula);
+
+
 module.exports = router;
