@@ -23,6 +23,7 @@ export interface Estado {
 export interface Cliente {
   id: number;
   nombre: string;
+  cedula?: string;
   telefono?: string;
   email?: string;
   fecha_registro?: string; // ISO string
@@ -58,6 +59,7 @@ export class CitasComponent {
     { id: 'PENDIENTE', name: 'Pendiente' },
     { id: 'CANCELADA', name: 'Cancelada' },
   ];
+  cedulaBusqueda: string = '';
 
   constructor(
     private dialog: MatDialog,
@@ -129,10 +131,12 @@ export class CitasComponent {
 
       this.dataCliente = new MatTableDataSource<Cliente>(
         data.map((element: any) => {
-          const { id, nombre, email, telefono, fecha_registro } = element;
+          const { id, nombre, cedula, email, telefono, fecha_registro } =
+            element;
           return {
             id,
             nombre,
+            cedula,
             email,
             telefono,
             fecha_registro: formatearFecha(fecha_registro),
@@ -176,20 +180,16 @@ export class CitasComponent {
         observaciones: this.citaForm.get('observaciones')?.value,
       };
 
-      console.log("🚀 ~ CitasComponent ~ saveCita ~ cita:", cita)
+      console.log('🚀 ~ CitasComponent ~ saveCita ~ cita:', cita);
 
       // Llamado al servicio de cita para agregar una nueva cita
       this._citaService.addCita(cita).subscribe(
         (data) => {
-          this._toastService.success(
-            'Cita creada correctamente',
-            'Correcto',
-            {
-              progressBar: true,
-              timeOut: 2000,
-              progressAnimation: 'decreasing',
-            }
-          );
+          this._toastService.success('Cita creada correctamente', 'Correcto', {
+            progressBar: true,
+            timeOut: 2000,
+            progressAnimation: 'decreasing',
+          });
           this.dialog.closeAll();
           this.loadData();
           this.citaForm.reset();
@@ -218,5 +218,36 @@ export class CitasComponent {
         progressAnimation: 'decreasing',
       });
     }
+  }
+
+  filterCitasByCedula(event: Event): void {
+    const cedula = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
+
+    if (!cedula) {
+      this.dataCita.filterPredicate = () => true;
+      this.dataCita.filter = '';
+      this.checkNoResults();
+      return;
+    }
+
+    // Buscar cliente que tenga esa cédula
+    const cliente = this.dataSourceCliente.find((c) =>
+      c.cedula?.toLowerCase().includes(cedula)
+    );
+    console.log(
+      '🚀 ~ CitasComponent ~ filterCitasByCedula ~ cliente:',
+      cliente
+    );
+
+    this.dataCita.filterPredicate = (data: Cita, filter: string): boolean => {
+      return cliente ? data.cliente_id === cliente.id : false;
+    };
+
+    this.dataCita.filter = cliente
+      ? cliente.id.toString()
+      : Math.random().toString();
+    this.checkNoResults();
   }
 }

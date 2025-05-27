@@ -8,7 +8,12 @@
             <button class="btn btn-primary" (click)="openCreateUserDialog()"> <i class="fa-solid fa-plus"> </i> <span
                 *ngIf="isDesktop"> Nuevo</span></button>
           </div>
+          <div class="ms-2">
+            <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10" type="text" class="form-control" placeholder="Filtrar por cédula"
+              (input)="filterCitasByCedula($event)" />
+          </div>
         </div>
+
       </div>
     </div>
 

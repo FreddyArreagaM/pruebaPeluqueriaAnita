@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export interface Cliente {
   id: number;
   nombre: string;
+  cedula?: string;
   telefono?: string;
   email?: string;
   fecha_registro?: string; // ISO string
@@ -23,7 +24,7 @@ export interface Cliente {
 export class ClientesComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator; //Se bindea con los componentes del html
   @ViewChild('dialogCreateCustomer') dialogTemplate!: TemplateRef<any>;
-  displayedColumns: string[] = ['name', 'email', 'telefono', 'createdDate'];
+  displayedColumns: string[] = ['name', 'dni' ,'email', 'telefono', 'createdDate'];
   dataSource: Cliente[] = [];
   listCliente: Cliente[] = [];
   dataCliente = new MatTableDataSource<Cliente>();
@@ -40,6 +41,7 @@ export class ClientesComponent {
   ) {
     this.customerForm = this.fb.group({
       nombre: ['', Validators.required],
+      cedula: ['', Validators.required],
       telefono: ['', Validators.required],
       email: ['', Validators.required],
     });
@@ -71,10 +73,11 @@ export class ClientesComponent {
 
       this.dataCliente = new MatTableDataSource<Cliente>(
         data.map((element: any) => {
-          const { id, nombre, email, telefono, fecha_registro } = element;
+          const { id, nombre, cedula, email, telefono, fecha_registro } = element;
           return {
             id,
             nombre,
+            cedula,
             email,
             telefono,
             fecha_registro: formatearFecha(fecha_registro),
@@ -107,6 +110,7 @@ export class ClientesComponent {
       // Objeto cliente con los datos del formulario
       const cliente = {
         nombre: this.customerForm.get('nombre')?.value,
+        cedula: this.customerForm.get('cedula')?.value,
         email: this.customerForm.get('email')?.value,
         telefono: this.customerForm.get('telefono')?.value,
       };

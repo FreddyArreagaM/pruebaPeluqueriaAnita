@@ -17,7 +17,7 @@ export interface Atencion {
 export interface Cita {
   id: number;
   clienteId: number;
-  fecha: string; // ISO string
+  fecha: string;
   estado: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA';
   observaciones?: string;
 }
@@ -156,7 +156,7 @@ export class AtencionesComponent {
     if (this.atencionForm.valid) {
       // Objeto atencion con los datos del formulario
       const atencion = {
-        cita_id: this.atencionForm.get('citaId')?.value,
+        citaId: this.atencionForm.get('citaId')?.value,
         fecha: this.atencionForm.get('fecha')?.value,
         total: this.atencionForm.get('total')?.value,
       };
@@ -175,9 +175,13 @@ export class AtencionesComponent {
               progressAnimation: 'decreasing',
             }
           );
-          this.dialog.closeAll();
-          this.loadData();
-          this.atencionForm.reset();
+
+          this._citaService.updateCitaEstado(atencion.citaId, 'REALIZADA').subscribe(()=> {
+            this.dialog.closeAll();
+            this.loadData();
+            this.atencionForm.reset();
+          });
+
         },
         (error) => {
           if (error.status === 200 || error.status === 201) {
@@ -195,7 +199,7 @@ export class AtencionesComponent {
         }
       );
     }
-    // Validación de campos del formulario de cliente
+    // Validación de campos del formulario de atenciones
     else {
       this._toastService.error('Por favor, ingrese todos los campos', 'Error', {
         progressBar: true,

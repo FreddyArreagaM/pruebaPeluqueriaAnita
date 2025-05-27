@@ -22,4 +22,9 @@ export class CitaService {
   addCita(cita: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/citas`, cita);
   }
+  
+  // update estado cita 
+  updateCitaEstado(citaId: number, estado: string): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/citas/${citaId}/estado`, { estado });
+  }
 }
