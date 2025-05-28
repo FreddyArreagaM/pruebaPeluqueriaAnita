@@ -1,0 +1,33 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+    - name: Copy project files to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "rm -rf ~/apipeluqueria"
+        scp -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:~/apipeluqueria
+
+    - name: SSH into EC2 and deploy container
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          cd ~/apipeluqueria
+          docker stop peluqueria-api || true && docker rm peluqueria-api || true
+          docker build -t peluqueria-api .
+          docker run -d -p 3000:3000 --name peluqueria-api peluqueria-api
+        EOF
