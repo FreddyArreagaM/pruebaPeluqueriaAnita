@@ -81,8 +81,6 @@ export class LoginComponent implements OnDestroy {
 
               await this.sendUserDataLocalStorage(data);
 
-              console.log('🚀 ~ LoginComponent ~ data:', data);
-
               this._toastr.success('Bienvenido, Ingreso exitoso', 'Sistema', {
                 progressBar: true,
                 timeOut: 2000,

@@ -180,7 +180,6 @@ export class CitasComponent {
         observaciones: this.citaForm.get('observaciones')?.value,
       };
 
-      console.log('🚀 ~ CitasComponent ~ saveCita ~ cita:', cita);
 
       // Llamado al servicio de cita para agregar una nueva cita
       this._citaService.addCita(cita).subscribe(
@@ -235,10 +234,6 @@ export class CitasComponent {
     // Buscar cliente que tenga esa cédula
     const cliente = this.dataSourceCliente.find((c) =>
       c.cedula?.toLowerCase().includes(cedula)
-    );
-    console.log(
-      '🚀 ~ CitasComponent ~ filterCitasByCedula ~ cliente:',
-      cliente
     );
 
     this.dataCita.filterPredicate = (data: Cita, filter: string): boolean => {

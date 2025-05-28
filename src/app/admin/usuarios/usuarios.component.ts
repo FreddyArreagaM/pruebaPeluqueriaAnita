@@ -143,7 +143,6 @@ export class UsuariosComponent {
         // Llamado al servicio de user para agregar un nuevo usuario
         this._userService.addUser(user).subscribe(
           (data) => {
-            console.log('🚀 ~ UsuariosComponent ~ saveUser ~ data:', data);
             this._toastService.success(
               'Usuario creado correctamente',
               'Correcto',

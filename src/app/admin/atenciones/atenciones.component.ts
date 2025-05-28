@@ -160,8 +160,6 @@ export class AtencionesComponent {
         fecha: this.atencionForm.get('fecha')?.value,
         total: this.atencionForm.get('total')?.value,
       };
-      
-      console.log("🚀 ~ AtencionesComponent ~ saveAtencion ~ atencion:", atencion)
 
       // Llamado al servicio de atencion para agregar una nueva atencion
       this._atencionService.addAtencion(atencion).subscribe(
