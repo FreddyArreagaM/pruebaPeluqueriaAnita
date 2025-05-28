@@ -31,26 +31,7 @@ CREATE TABLE atenciones (
     FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE CASCADE
 );
 
--- 4. Tabla de servicios (catálogo)
-CREATE TABLE servicios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    duracion_minutos INT
-);
-
--- 5. Tabla de detalle de atenciones
-CREATE TABLE detalle_atenciones (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    atencion_id INT NOT NULL,
-    servicio_id INT NOT NULL,
-    cantidad INT DEFAULT 1,
-    subtotal DECIMAL(10,2),
-    FOREIGN KEY (atencion_id) REFERENCES atenciones(id) ON DELETE CASCADE,
-    FOREIGN KEY (servicio_id) REFERENCES servicios(id)
-);
-
--- 6. Tabla de usuarios (para login si aplica)
+-- 4. Tabla de usuarios (para login si aplica)
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
