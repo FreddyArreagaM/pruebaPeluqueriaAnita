@@ -31,7 +31,7 @@ jobs:
         aws-region: us-east-1
 
     - name: Deploy to S3
-      run: aws s3 sync ./dist/app-apipixabay s3://${{ secrets.S3_BUCKET_NAME }} --delete
+      run: aws s3 sync ./dist/spapeluqueria s3://${{ secrets.S3_BUCKET_NAME }} --delete
 
     - name: Invalidate CloudFront cache
       run: |
