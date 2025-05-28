@@ -16,6 +16,11 @@ const routes: Routes = [
     component: SharedComponent,  
     loadChildren: ()=> import('./admin/admin.module').then(m=>m.AdminModule)
   },
+    {
+    path: 'client',
+    component: SharedComponent,  
+    loadChildren: ()=> import('./customer/customer.module').then(m=>m.CustomerModule)
+  },
   { 
     path: '**', redirectTo:'auth', pathMatch:'full' 
   },

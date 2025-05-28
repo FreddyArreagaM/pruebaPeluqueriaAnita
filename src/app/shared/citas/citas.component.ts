@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { CitaService } from 'src/app/services/cita/cita.service';
 import { ClienteService } from 'src/app/services/cliente/cliente.service';
 
@@ -53,6 +54,7 @@ export class CitasComponent {
   customerList: Cliente[] = [];
   dataCliente = new MatTableDataSource<Cliente>();
   citaForm!: FormGroup;
+  role!: string;
 
   estadoList: Estado[] = [
     { id: 'REALIZADA', name: 'Realizada' },
@@ -65,6 +67,7 @@ export class CitasComponent {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private _citaService: CitaService,
+    private _authService: AuthService,
     private _clienteService: ClienteService,
     private _toastService: ToastrService
   ) {
@@ -80,6 +83,11 @@ export class CitasComponent {
   }
 
   async ngOnInit(): Promise<void> {
+    // Metodo para obtener los datos del usuario logeado
+    this._authService.getUser().subscribe((data) => {
+      const user = JSON.parse(data);
+      this.role = user.rol;
+    });
     this.checkDeviceType();
     await this.loadData();
   }
@@ -90,6 +98,15 @@ export class CitasComponent {
 
   private checkDeviceType(): void {
     this.isDesktop = window.innerWidth > 768;
+  }
+
+  // Metodo para validar si el usuario logeado es administrador
+  isAdmin(): boolean {
+    if (this.role == 'ADMIN') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Método para obtener la lista de clientes y cargarlos en la tabla
@@ -179,7 +196,6 @@ export class CitasComponent {
         estado: this.citaForm.get('estado')?.value,
         observaciones: this.citaForm.get('observaciones')?.value,
       };
-
 
       // Llamado al servicio de cita para agregar una nueva cita
       this._citaService.addCita(cita).subscribe(

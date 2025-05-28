@@ -1,23 +1,23 @@
 <div class="container-fluid">
   <div class="row">
     <div class="d-flex flex-row mt-4">
-      <div class="col-7 ms-2 col-lg-6">
-        <h4 class="mt-1 mb-4"> Lista de Citas </h4>
+      <div class="col-12 ms-2 col-lg-6">
+        <h4 class="mt-1 mb-4" *ngIf="isAdmin()"> Lista de Citas </h4>
+        <h4 class="mt-1 mb-4" *ngIf="!isAdmin()"> Agendar una nueva Cita </h4>
         <div class="d-flex justify-content-start">
           <div class="me-2">
             <button class="btn btn-primary" (click)="openCreateUserDialog()"> <i class="fa-solid fa-plus"> </i> <span
                 *ngIf="isDesktop"> Nuevo</span></button>
           </div>
-          <div class="ms-2">
-            <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10" type="text" class="form-control" placeholder="Filtrar por cédula"
-              (input)="filterCitasByCedula($event)" />
+          <div class="ms-2" *ngIf="isAdmin()">
+            <input oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10"
+              type="text" class="form-control" placeholder="Filtrar por cédula" (input)="filterCitasByCedula($event)" />
           </div>
         </div>
-
       </div>
     </div>
 
-    <div class="mt-5">
+    <div class="mt-5" *ngIf="isAdmin()">
       <h6 *ngIf="noResults"> No hay datos de Citas </h6>
       <div class="table-responsive">
         <table mat-table [dataSource]="dataCita" class="mat-elevation-z8" *ngIf="!noResults">
@@ -86,7 +86,7 @@
                   </select>
                 </div>
 
-                <div class="col-6 mb-3">
+                <div class="col-12 mb-3">
                   <label for="observations" class="form-label">Observaciones: </label>
                   <input type="text"
                     oninput="this.value = this.value.replace(/[^A-Za-zñÑáéíóúÁÉÍÓÚ\s ]/g, '').replace(/(\..*)\./g, '$1');"
@@ -97,7 +97,6 @@
                 <div class="col-12 col-md-12 mb-3 text-center mt-3">
                   <button class="btn btn-primary w-60" (click)="saveCita()"> Crear Cita </button>
                 </div>
-
               </div>
             </div>
           </form>
